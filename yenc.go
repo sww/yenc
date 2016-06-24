@@ -117,7 +117,7 @@ func Decode(f io.Reader) (*Part, error) {
 
 	r := bufio.NewReader(f)
 	for {
-		c, _, err := r.ReadRune()
+		c, err := r.ReadByte()
 		if err == io.EOF {
 			break
 		} else if err != nil {
@@ -162,16 +162,12 @@ func Decode(f io.Reader) (*Part, error) {
 		case strings.EqualFold(s, "="):
 			escapeChar = true
 		case escapeChar:
+			p.Body = append(p.Body, c-0x6a)
 			escapeChar = false
-			for _, b := range []byte(s) {
-				p.Body = append(p.Body, b-0x6a)
-			}
 		case s == "\n" || s == "\r":
 			newLine = true
 		default:
-			for _, b := range []byte(s) {
-				p.Body = append(p.Body, b-0x2a)
-			}
+			p.Body = append(p.Body, c-0x2a)
 		}
 
 	}
