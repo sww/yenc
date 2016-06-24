@@ -159,7 +159,7 @@ func Decode(f io.Reader) (*Part, error) {
 		newLine = false
 
 		switch {
-		case strings.EqualFold(s, "\\"):
+		case strings.EqualFold(s, "="):
 			escapeChar = true
 		case escapeChar:
 			escapeChar = false
