@@ -7,18 +7,16 @@ import (
 )
 
 func TestDecode(t *testing.T) {
-	f := strings.NewReader(`=ybegin part=1 line=128 size=1234 name=foo bar
-hello
-=yend size=2345 part=2 pcrc32=1a2a3a4a`)
+	f := strings.NewReader("=ybegin part=1 line=128 size=123 name=yhello\r\n\x92\x8f\x96\x96\x994\xa1\x99\x9c\x96\x8e4\r\n=yend size=123 part=1 pcrc32=1a2a3a4a")
 
 	want := Part{
 		BeginPart: 1,
-		BeginSize: 1234,
-		Name:      "foo bar",
-		EndPart:   2,
-		EndSize:   2345,
+		BeginSize: 123,
+		Name:      "yhello",
+		EndPart:   1,
+		EndSize:   123,
 		CRC32:     "1a2a3a4a",
-		Body:      []byte{62, 59, 66, 66, 69},
+		Body:      []byte(string("hello\nworld\n")),
 	}
 
 	p, err := Decode(f)
