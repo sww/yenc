@@ -23,19 +23,20 @@ func parseLine(line string) map[string]string {
 
 type Part struct {
 	// Values from begin.
-	BeginPart int
-	BeginSize int
+	BeginPart int64
+	BeginSize int64
 	Name      string
-	Total     int
+	Total     int64
 
 	// Values from part, if available.
-	PartBegin int
-	PartEnd   int
+	PartBegin int64
+	PartEnd   int64
 
 	// Values from end.
-	EndPart int
-	EndSize int
-	CRC32   string
+	EndPart     int64
+	EndSize     int64
+	CRC32       string
+	ActualCRC32 string // The checksum of the contents.
 
 	Body []byte
 }
@@ -54,13 +55,13 @@ func (p *Part) parseBegin(line string) {
 	for k, v := range parseLine(line[:nameIndex]) {
 		switch k {
 		case "part":
-			part, err := strconv.Atoi(v)
+			part, err := strconv.ParseInt(v, 10, 64)
 			if err != nil {
 				continue
 			}
 			p.BeginPart = part
 		case "size":
-			size, err := strconv.Atoi(v)
+			size, err := strconv.ParseInt(v, 10, 64)
 			if err != nil {
 				continue
 			}
@@ -73,13 +74,13 @@ func (p *Part) parsePart(line string) {
 	for k, v := range parseLine(line) {
 		switch k {
 		case "begin":
-			begin, err := strconv.Atoi(v)
+			begin, err := strconv.ParseInt(v, 10, 64)
 			if err != nil {
 				continue
 			}
 			p.PartBegin = begin
 		case "end":
-			end, err := strconv.Atoi(v)
+			end, err := strconv.ParseInt(v, 10, 64)
 			if err != nil {
 				continue
 			}
@@ -92,13 +93,13 @@ func (p *Part) parseEnd(line string) {
 	for k, v := range parseLine(line) {
 		switch k {
 		case "part":
-			part, err := strconv.Atoi(v)
+			part, err := strconv.ParseInt(v, 10, 64)
 			if err != nil {
 				continue
 			}
 			p.EndPart = part
 		case "size":
-			size, err := strconv.Atoi(v)
+			size, err := strconv.ParseInt(v, 10, 64)
 			if err != nil {
 				continue
 			}
